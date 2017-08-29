@@ -15,7 +15,7 @@ open class ZoomAnimatedTransitioningDelegate: NSObject, UIViewControllerTransiti
     open var referenceSlideshowView: ImageSlideshow?
 
     // must be weak because FullScreenSlideshowViewController has strong reference to its transitioning delegate
-    weak var referenceSlideshowController: FullScreenSlideshowViewController?
+    weak var referenceSlideshowController: FullScreenVisibility?
 
     var referenceSlideshowViewFrame: CGRect?
     var gestureRecognizer: UIPanGestureRecognizer!
@@ -29,7 +29,7 @@ open class ZoomAnimatedTransitioningDelegate: NSObject, UIViewControllerTransiti
         - parameter slideshowView: ImageSlideshow instance to animate the transition from
         - parameter slideshowController: FullScreenViewController instance to animate the transition to
      */
-    public init(slideshowView: ImageSlideshow, slideshowController: FullScreenSlideshowViewController) {
+    public init<T:UIViewController>(slideshowView: ImageSlideshow, slideshowController: T) where T:FullScreenVisibility {
         self.referenceSlideshowView = slideshowView
         self.referenceSlideshowController = slideshowController
 
@@ -43,7 +43,7 @@ open class ZoomAnimatedTransitioningDelegate: NSObject, UIViewControllerTransiti
         - parameter imageView: UIImageView instance to animate the transition from
         - parameter slideshowController: FullScreenViewController instance to animate the transition to
      */
-    public init(imageView: UIImageView, slideshowController: FullScreenSlideshowViewController) {
+    public init<T:UIViewController>(imageView: UIImageView, slideshowController: T) where T:FullScreenVisibility {
         self.referenceImageView = imageView
         self.referenceSlideshowController = slideshowController
 
@@ -69,7 +69,7 @@ open class ZoomAnimatedTransitioningDelegate: NSObject, UIViewControllerTransiti
 
         if gesture.state == .began {
             interactionController = UIPercentDrivenInteractiveTransition()
-            referenceSlideshowController.dismiss(animated: true, completion: nil)
+            referenceSlideshowController.dismissFullScreen(animated: true, completion: nil)
         } else if gesture.state == .changed {
             interactionController?.update(percent)
         } else if gesture.state == .ended || gesture.state == .cancelled || gesture.state == .failed {

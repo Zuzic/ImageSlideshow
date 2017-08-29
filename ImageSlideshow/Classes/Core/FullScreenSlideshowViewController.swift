@@ -7,8 +7,13 @@
 
 import UIKit
 
-open class FullScreenSlideshowViewController: UIViewController {
+public protocol FullScreenVisibility: class {
+    var slideshow: ImageSlideshow {get set}
+    var pageSelected: ((_ page: Int) -> Void)? {get set}
+    func dismissFullScreen(animated flag: Bool, completion: (() -> Void)?)
+}
 
+open class FullScreenSlideshowViewController: UIViewController, FullScreenVisibility {
     open var slideshow: ImageSlideshow = {
         let slideshow = ImageSlideshow()
         slideshow.zoomEnabled = true
@@ -91,6 +96,10 @@ open class FullScreenSlideshowViewController: UIViewController {
             pageSelected(slideshow.currentPage)
         }
 
-        dismiss(animated: true, completion: nil)
+        dismissFullScreen(animated: true, completion: nil)
+    }
+    
+    public func dismissFullScreen(animated flag: Bool, completion: (() -> Void)?) {
+        dismiss(animated: flag, completion: completion)
     }
 }
