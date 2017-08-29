@@ -10,6 +10,7 @@ import UIKit
 public protocol FullScreenVisibility: class {
     var slideshow: ImageSlideshow! {get set}
     var pageSelected: ((_ page: Int) -> Void)? {get set}
+    var backgroundColor: UIColor {get}
     func dismissFullScreen(animated flag: Bool, completion: (() -> Void)?)
 }
 

@@ -179,14 +179,15 @@ extension ZoomInAnimator: UIViewControllerAnimatedTransitioning {
         let containerView = transitionContext.containerView
         let fromViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from)!
 
-        guard let toViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to) as? FullScreenSlideshowViewController else {
+        guard let toViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to),
+            let fullScreenVC = toViewController as? FullScreenVisibility else {
             return
         }
 
         toViewController.view.frame = transitionContext.finalFrame(for: toViewController)
 
         let transitionBackgroundView = UIView(frame: containerView.frame)
-        transitionBackgroundView.backgroundColor = toViewController.backgroundColor
+        transitionBackgroundView.backgroundColor = fullScreenVC.backgroundColor
         containerView.addSubview(transitionBackgroundView)
         containerView.sendSubview(toBack: transitionBackgroundView)
 
@@ -209,7 +210,7 @@ extension ZoomInAnimator: UIViewControllerAnimatedTransitioning {
             }
         }
 
-        if let item = toViewController.slideshow.currentSlideshowItem, item.zoomInInitially {
+        if let item = fullScreenVC.slideshow.currentSlideshowItem, item.zoomInInitially {
             transitionViewFinalFrame.size = CGSize(width: transitionViewFinalFrame.size.width * item.maximumZoomScale, height: transitionViewFinalFrame.size.height * item.maximumZoomScale)
         }
 
@@ -241,7 +242,8 @@ extension ZoomOutAnimator: UIViewControllerAnimatedTransitioning {
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         let toViewController: UIViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to)!
 
-        guard let fromViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from) as? FullScreenSlideshowViewController else {
+        guard let fromViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from),
+          let fullScreenVC = toViewController as? FullScreenVisibility else {
             return
         }
 
@@ -253,7 +255,7 @@ extension ZoomOutAnimator: UIViewControllerAnimatedTransitioning {
         containerView.sendSubview(toBack: toViewController.view)
 
         var transitionViewInitialFrame: CGRect
-        if let currentSlideshowItem = fromViewController.slideshow.currentSlideshowItem {
+        if let currentSlideshowItem = fullScreenVC.slideshow.currentSlideshowItem {
             if let image = currentSlideshowItem.imageView.image {
                 transitionViewInitialFrame = image.tgr_aspectFitRectForSize(currentSlideshowItem.imageView.frame.size)
             } else {
@@ -261,7 +263,7 @@ extension ZoomOutAnimator: UIViewControllerAnimatedTransitioning {
             }
             transitionViewInitialFrame = containerView.convert(transitionViewInitialFrame, from: currentSlideshowItem)
         } else {
-            transitionViewInitialFrame = fromViewController.slideshow.frame
+            transitionViewInitialFrame = fullScreenVC.slideshow.frame
         }
 
         var transitionViewFinalFrame: CGRect
@@ -272,7 +274,7 @@ extension ZoomOutAnimator: UIViewControllerAnimatedTransitioning {
             transitionViewFinalFrame = referenceSlideshowViewFrame
 
             // do a frame scaling when AspectFit content mode enabled
-            if fromViewController.slideshow.currentSlideshowItem?.imageView.image != nil && referenceImageView.contentMode == UIViewContentMode.scaleAspectFit {
+            if fullScreenVC.slideshow.currentSlideshowItem?.imageView.image != nil && referenceImageView.contentMode == UIViewContentMode.scaleAspectFit {
                 transitionViewFinalFrame = containerView.convert(referenceImageView.aspectToFitFrame(), from: referenceImageView)
             }
 
@@ -285,11 +287,11 @@ extension ZoomOutAnimator: UIViewControllerAnimatedTransitioning {
         }
 
         let transitionBackgroundView = UIView(frame: containerView.frame)
-        transitionBackgroundView.backgroundColor = fromViewController.backgroundColor
+        transitionBackgroundView.backgroundColor = fullScreenVC.backgroundColor
         containerView.addSubview(transitionBackgroundView)
         containerView.sendSubview(toBack: transitionBackgroundView)
 
-        let transitionView: UIImageView = UIImageView(image: fromViewController.slideshow.currentSlideshowItem?.imageView.image)
+        let transitionView: UIImageView = UIImageView(image: fullScreenVC.slideshow.currentSlideshowItem?.imageView.image)
         transitionView.contentMode = UIViewContentMode.scaleAspectFill
         transitionView.clipsToBounds = true
         transitionView.frame = transitionViewInitialFrame
