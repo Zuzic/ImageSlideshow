@@ -154,7 +154,7 @@ open class ImageSlideshow: UIView {
     fileprivate var scrollViewImages = [InputSource]()
 
     /// Transitioning delegate to manage the transition to full screen controller
-    open fileprivate(set) var slideshowTransitioningDelegate: ZoomAnimatedTransitioningDelegate?
+    open var slideshowTransitioningDelegate: ZoomAnimatedTransitioningDelegate?
 
     // MARK: - Life cycle
 
