@@ -8,13 +8,14 @@
 import UIKit
 
 public protocol FullScreenVisibility: class {
-    var slideshow: ImageSlideshow {get set}
+    var slideshow: ImageSlideshow! {get set}
     var pageSelected: ((_ page: Int) -> Void)? {get set}
     func dismissFullScreen(animated flag: Bool, completion: (() -> Void)?)
 }
 
 open class FullScreenSlideshowViewController: UIViewController, FullScreenVisibility {
-    open var slideshow: ImageSlideshow = {
+   
+    open var slideshow: ImageSlideshow! = {
         let slideshow = ImageSlideshow()
         slideshow.zoomEnabled = true
         slideshow.contentScaleMode = UIViewContentMode.scaleAspectFit
