@@ -243,7 +243,7 @@ extension ZoomOutAnimator: UIViewControllerAnimatedTransitioning {
         let toViewController: UIViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to)!
 
         guard let fromViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from),
-          let fullScreenVC = toViewController as? FullScreenVisibility else {
+          let fullScreenVC = fromViewController as? FullScreenVisibility else {
             return
         }
 
